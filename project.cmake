@@ -6,7 +6,7 @@ endmacro ()
 
 macro (ecosnail_project)
     set (options TESTS)
-    set (oneValueArgs "")
+    set (oneValueArgs C++)
     set (multiValueArgs SOURCES DEPENDS EXAMPLES)
     cmake_parse_arguments (
         PROJECT
@@ -16,9 +16,16 @@ macro (ecosnail_project)
         ${ARGN}
     )
 
+    project (${PROJECT_NAME})
+
+    if (PROJECT_C++)
+        set (CMAKE_CXX_STANDARD ${PROJECT_C++})
+        set (CMAKE_CXX_STANDARD_REQUIRED TRUE)
+    endif ()
+
     get_filename_component (PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
     set (ECOSNAIL_PROJECT ${PROJECT_NAME})
-    set (ECOSNAIL_PROJECTS ${ECOSNAIL_PROJECTS} ${PROJECT_NAME} PARENT_SCOPE)
+    #set (ECOSNAIL_PROJECTS ${ECOSNAIL_PROJECTS} ${PROJECT_NAME} PARENT_SCOPE)
     set (project_key ECOSNAIL_PROJECT_${PROJECT_NAME})
 
     if (PROJECT_SOURCES)
@@ -32,14 +39,14 @@ macro (ecosnail_project)
     target_include_directories (${PROJECT_NAME} ${scope} include)
     if (PROJECT_DEPENDS)
         target_link_libraries (${PROJECT_NAME} ${scope} ${PROJECT_DEPENDS})
-        set (${project_key}_DEPENDS ${PROJECT_DEPENDS} PARENT_SCOPE)
+        #set (${project_key}_DEPENDS ${PROJECT_DEPENDS} PARENT_SCOPE)
     endif ()
 
     if (PROJECT_TESTS)
-        set (${project_key}_HAS_TESTS 1 PARENT_SCOPE)
+        #set (${project_key}_HAS_TESTS 1 PARENT_SCOPE)
         add_subdirectory (tests)
     else ()
-        set (${project_key}_HAS_TESTS 0 PARENT_SCOPE)
+        #set (${project_key}_HAS_TESTS 0 PARENT_SCOPE)
     endif ()
 
     foreach (example_name ${PROJECT_EXAMPLES})
